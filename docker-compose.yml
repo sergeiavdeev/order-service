@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  order-service:
+    build: .
+    image: sergeiavdeev/order-service:${TAG}
+    container_name: order-service
+    command: java -jar order-service-0.0.1-SNAPSHOT.jar
+    restart: always
+    environment:
+      spring.profiles.active: ${PROFILE}
+    networks:
+      - ttc-tops
+    deploy:
+      resources:
+        limits:
+          memory: '384M'
+        reservations:
+          memory: '256M'
+networks:
+  ttc-tops:
+    external: true
+    name: ttc-tops
+    driver: bridge
+
+
