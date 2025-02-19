@@ -8,6 +8,8 @@ import reactor.core.publisher.Flux;
 import ru.avdeev.order_service.dto.OrderDto;
 import ru.avdeev.order_service.service.OrderService;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("v1/order")
 @RequiredArgsConstructor
@@ -17,6 +19,6 @@ public class OrderController {
 
     @GetMapping("")
     public Flux<OrderDto> getOrders() {
-        return orderService.getAll(null);
+        return orderService.getAll(UUID.fromString("5801449c-3447-472e-bd04-f3b645688b6b"));
     }
 }

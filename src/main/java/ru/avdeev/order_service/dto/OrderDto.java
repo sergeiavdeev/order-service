@@ -18,4 +18,5 @@ public class OrderDto {
     private LocalDate orderDate;
     private String number;
     List<OrderProductDto> products;
+    List<DebtDto> debts;
 }

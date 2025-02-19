@@ -11,10 +11,7 @@ import ru.avdeev.order_service.dto.OrderDto;
 import ru.avdeev.order_service.dto.OrderProductDto;
 import ru.avdeev.order_service.mapper.OrderMapper;
 import ru.avdeev.order_service.repository.OrderRepository;
-import ru.avdeev.order_service.service.ConditionService;
-import ru.avdeev.order_service.service.OrderProductService;
-import ru.avdeev.order_service.service.OrderService;
-import ru.avdeev.order_service.service.TariffService;
+import ru.avdeev.order_service.service.*;
 
 import java.util.UUID;
 
@@ -27,6 +24,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderProductService orderProductService;
     private final TariffService tariffService;
     private final ConditionService conditionService;
+    private final DebtService debtService;
     private final OrderMapper orderMapper;
 
     @Override
@@ -41,6 +39,7 @@ public class OrderServiceImpl implements OrderService {
                 })
                 .flatMapMany(Flux::fromIterable)
                 .flatMap(product -> setProductSum(product, order.getUserId()))
+                .flatMap(this::addDebt)
                 .flatMap(orderProductService::save)
                 .collectList()
                 .map(pList -> {
@@ -70,7 +69,13 @@ public class OrderServiceImpl implements OrderService {
                             order.setProducts(productList);
                             return order;
                         })
-                );
+                )
+                .flatMap(order -> debtService.getDebts(order.getId())
+                        .collectList()
+                        .map(debts -> {
+                            order.setDebts(debts);
+                            return order;
+                        }));
     }
 
     private Mono<OrderProductDto> setProductSum(OrderProductDto product, UUID userId) {
@@ -86,5 +91,10 @@ public class OrderServiceImpl implements OrderService {
                     product.setSum(sum);
                     return product;
                 });
+    }
+
+    private Mono<OrderProductDto> addDebt(OrderProductDto product) {
+        return debtService.addDt(product.getOrderId(), product.getSum())
+                .map(d -> product);
     }
 }
