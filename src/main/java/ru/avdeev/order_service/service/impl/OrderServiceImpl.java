@@ -78,6 +78,23 @@ public class OrderServiceImpl implements OrderService {
                         }));
     }
 
+    @Override
+    public Mono<OrderDto> getOrderByOrderProductId(UUID id) {
+        return orderRepository.findByOrderProductId(id)
+                .map(orderMapper::toDto)
+                .flatMap(order -> orderProductService.getByOrderId(order.getId())
+                        .map(productList -> {
+                            order.setProducts(productList);
+                            return order;
+                        }))
+                .flatMap(order -> debtService.getDebts(order.getId())
+                        .collectList()
+                        .map(debts -> {
+                            order.setDebts(debts);
+                            return order;
+                        }));
+    }
+
     private Mono<OrderProductDto> setProductSum(OrderProductDto product, UUID userId) {
         return conditionService.getCondition(product.getProductId(), userId, product.getCount())
                 .map(ConditionDto::getSum)

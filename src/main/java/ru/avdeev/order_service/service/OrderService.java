@@ -12,4 +12,5 @@ public interface OrderService {
     Mono<OrderDto> saveOrder(OrderDto order);
     Mono<OrderDto> cancelOrder(UUID orderId);
     Flux<OrderDto> getAll(UUID userId);
+    Mono<OrderDto> getOrderByOrderProductId(UUID id);
 }
