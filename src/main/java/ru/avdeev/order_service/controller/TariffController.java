@@ -36,7 +36,7 @@ public class TariffController {
                 )
                 .map(t -> {
                    t.getT2().setCondition(t.getT1());
-                   t.getT2().setSum(t.getT2().getPrice() * count);
+                   t.getT2().setSum(t.getT2().getPrice() == null ? 0 : t.getT2().getPrice() * count);
                    return t.getT2();
                 });
     }
