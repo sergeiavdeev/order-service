@@ -4,12 +4,10 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import ru.avdeev.order_service.dto.DebtDto;
 import ru.avdeev.order_service.dto.OrderDto;
 import ru.avdeev.order_service.exception.ApiException;
 import ru.avdeev.order_service.service.OrderService;
@@ -36,5 +34,10 @@ public class OrderController {
     @GetMapping("/{id}")
     public Mono<OrderDto> getByOrderProductId(@PathVariable("id") UUID orderProductId) {
         return orderService.getOrderByOrderProductId(orderProductId);
+    }
+
+    @PostMapping("/pay")
+    public Mono<Void> payOrder(@RequestBody DebtDto debtDto) {
+        return orderService.payOrder(debtDto);
     }
 }

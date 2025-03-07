@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.avdeev.order_service.dto.ConditionDto;
+import ru.avdeev.order_service.dto.DebtDto;
 import ru.avdeev.order_service.dto.OrderDto;
 import ru.avdeev.order_service.dto.OrderProductDto;
 import ru.avdeev.order_service.mapper.OrderMapper;
@@ -93,6 +94,12 @@ public class OrderServiceImpl implements OrderService {
                             order.setDebts(debts);
                             return order;
                         }));
+    }
+
+    @Override
+    public Mono<Void> payOrder(DebtDto debtDto) {
+        return debtService.addKt(debtDto.getOrderId(), debtDto.getKt())
+                .then();
     }
 
     private Mono<OrderProductDto> setProductSum(OrderProductDto product, UUID userId) {

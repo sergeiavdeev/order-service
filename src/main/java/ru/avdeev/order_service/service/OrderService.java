@@ -2,6 +2,7 @@ package ru.avdeev.order_service.service;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import ru.avdeev.order_service.dto.DebtDto;
 import ru.avdeev.order_service.dto.OrderDto;
 import ru.avdeev.order_service.entity.Order;
 
@@ -13,4 +14,5 @@ public interface OrderService {
     Mono<OrderDto> cancelOrder(UUID orderId);
     Flux<OrderDto> getAll(UUID userId);
     Mono<OrderDto> getOrderByOrderProductId(UUID id);
+    Mono<Void> payOrder(DebtDto debtDto);
 }
